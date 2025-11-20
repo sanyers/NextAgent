@@ -4,9 +4,11 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # 服务端口
-    server_port: int = Field(default=8100, alias="SERVER_PORT")
+    server_port: int = Field(default=8000, alias="SERVER_PORT")
     # 密钥
-    secret_key: str = Field(default="change_me_please", alias="SECRET_KEY")
+    secret_key: str = Field(default="", alias="SECRET_KEY")
+    # 静态资源目录（用于前端构建产物）
+    static_assets_dir: str = Field(default="./web", alias="STATIC_ASSETS_DIR")
 
     # SQLite 配置
     sqlite_db_path: str = Field(default="./data/data.db", alias="SQLITE_DB_PATH")
