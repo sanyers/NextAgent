@@ -1,25 +1,14 @@
-"""
-NextAgent FastAPI应用入口
-"""
-
-import sys
-from pathlib import Path
-
-# 将项目根目录添加到Python路径，以支持绝对导入
-project_root = Path(__file__).parent.parent
-if str(project_root) not in sys.path:
-    sys.path.insert(0, str(project_root))
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.api.v1 import router as v1_router
 
 title = "NextAgent"
 version = "0.0.1"
+description = "自主Agent API"
 # 创建FastAPI应用实例
 app = FastAPI(
     title=title,
-    description="自主Agent API",
+    description=description,
     version=version,
     docs_url="/docs",
     redoc_url="/redoc",
@@ -42,7 +31,7 @@ app.include_router(v1_router)
 async def root():
     """根路径接口"""
     return {
-        "message": "Welcome to NextAgent API",
+        "description": description,
         "version": version,
         "docs": "/docs",
         "redoc": "/redoc",
@@ -51,5 +40,4 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
-
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run("src.main:app", host="0.0.0.0", port=8000, reload=True)

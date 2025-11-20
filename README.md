@@ -38,7 +38,7 @@ pip install -r requirements.txt
 ### 方式一：直接运行
 
 ```bash
-python src/main.py
+python -m src.main
 ```
 
 ### 方式二：使用 uvicorn 命令
