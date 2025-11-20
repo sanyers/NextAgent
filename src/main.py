@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.api.v1 import router as v1_router
+from src.api.core.config import settings
 
 title = "NextAgent"
 version = "0.0.1"
@@ -40,4 +41,4 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("src.main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("src.main:app", host="0.0.0.0", port=settings.server_port, reload=True)
