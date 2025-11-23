@@ -1,16 +1,46 @@
+import logging
+from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Optional
+from typing import AsyncGenerator, Optional
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
 from src.api.v1 import router as v1_router
-from src.api.core.config import settings
+from src.core.config import settings
+from src.services.llm import LLMConnectorFactory
+from src.services.model_registry import sync_models_from_connectors
+
+logger = logging.getLogger(__name__)
 
 title = "NextAgent"
 version = "0.0.1"
 description = "自主Agent API"
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    """
+    应用生命周期管理
+    启动时执行初始化，关闭时执行清理
+    """
+    # 启动时执行
+    logger.info("应用启动中...")
+    try:
+        await sync_models_from_connectors()
+        logger.info("模型列表同步完成")
+    except Exception as e:
+        logger.warning(f"模型列表同步失败: {e}")
+
+    yield
+
+    # 关闭时执行
+    logger.info("应用关闭中...")
+    await LLMConnectorFactory.close_all()
+    logger.info("连接器已关闭")
+
+
 # 创建FastAPI应用实例
 app = FastAPI(
     title=title,
@@ -18,6 +48,7 @@ app = FastAPI(
     version=version,
     docs_url="/docs",
     redoc_url="/redoc",
+    lifespan=lifespan,
 )
 
 # 配置CORS中间件
@@ -75,7 +106,7 @@ else:
             "redoc": "/redoc",
         }
 
-
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("src.main:app", host="0.0.0.0", port=settings.server_port, reload=True)
+

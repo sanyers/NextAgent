@@ -12,6 +12,7 @@ update
 .env
 .pyc
 .cursor
+.cursorrules
 
 # Editor directories and files
 .vscode/*

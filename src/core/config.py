@@ -13,6 +13,12 @@ class Settings(BaseSettings):
     # SQLite 配置
     sqlite_db_path: str = Field(default="./data/data.db", alias="SQLITE_DB_PATH")
 
+    # Ollama 配置
+    ollama_base_url: str = Field(
+        default="http://localhost:11434", alias="OLLAMA_BASE_URL"
+    )
+    ollama_timeout: int = Field(default=60, alias="OLLAMA_TIMEOUT")
+
     model_config = {
         "case_sensitive": False,
         "env_file": ".env",
